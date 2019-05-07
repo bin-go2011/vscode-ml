@@ -60,3 +60,27 @@ for epoch in range(epochs):
         runningLoss += loss.item()
     
     print(runningLoss)
+
+#%%
+import numpy as np
+def successRate(predicted, labes):
+    predict = [np.argmax(p.detach().numpy()) for p in predicted]
+    actual = [labels[i].item() for i in range(len(predicted))]
+    correct = [i for i, j in zip(predict, actual) if i==j]
+    return (len(correct)/(len(predict)))
+
+#%%
+testSet = dsets.MNIST(root='./data', train=False, transform=trans.ToTensor(), download=True)
+testloader = torch.utils.data.DataLoader(dataset=testSet, batch_size=10000, shuffle=True)
+
+#%%
+testData = iter(testloader)
+images, labels = testData.next()
+print(images.shape)
+print(labels.shape)
+print(type(labels[0].item()))
+print(labels[0].item())
+output = model(images.view(-1, 28*28))
+print(successRate(output, labels))
+
+#%%
